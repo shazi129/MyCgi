@@ -3,9 +3,9 @@
 
 import traceback
 import sys
-import default_encoding
-from cgi_factory import CgiFactory
-from request_field import RequestFieldStorage
+import os
+from cgi_frame.cgi_factory import CgiFactory
+from cgi_frame.request_field import RequestFieldStorage
 from utils.log_utils import Log
 
 def process_header(status, header):
@@ -15,9 +15,21 @@ def process_header(status, header):
     sys.stdout.write("\r\n")
     sys.stdout.flush()
 
+def init_env():
+    """设置运行环境"""
+
+    #默认编码
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+
+    #配置文件
+    this_path = os.path.split(os.path.realpath(__file__))[0]
+    Log.init(iniPath="%s/config" % this_path)
+
 def application(environ, start_response):
 
-    Log.update_id()
+    Log.update_id() #保证每次请求的id都不同
+
     if "REMOTE_ADDR" in environ:
         Log.info("request from %s" %(str(environ["REMOTE_ADDR"])))
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #coding: utf-8
 
+from log_utils import Log
+
 def is_ipv4(ipstr):
     try:
         return map(lambda x: -1<x<256,
@@ -36,7 +38,7 @@ def get_local_ip():
         log_error("get local ip through cmd error: %s" %(str(e)))
         log_debug(traceback.format_exc())
 
-def urlopen(url, post_data, headers={}, timeout=3):
+def urlopen(url, post_data, headers={}, timeout=30):
     import socket
     import urllib2
     default_timeout = socket.getdefaulttimeout()
@@ -66,20 +68,31 @@ def get_subnet(ip, mask, default=""):
             return default
         raise Exception("get_subnet error:%s" %(str(e)))
 
-def url_post(url, data, timeout=5):
+def url_post(url, req, timeout=30):
     import urllib2
-    req = urllib2.Request(url, data)
-    fd = urllib2.urlopen(req, None, timeout)
-    data = ""
-    while 1:
-        recv = fd.read(1024)
-        if len(recv) == 0:
-            break;
-        data += recv
-    return data.strip()
+    try:
+        data = urllib2.Request(url, req)
+        fd = urllib2.urlopen(data, None, timeout)
+        data = ""
+        while 1:
+            recv = fd.read(1024)
+            if len(recv) == 0:
+                break;
+            data += recv
 
-def url_get(url, data, timeout=5):
+        #只是为了打log
+        log_data = data
+        if len(log_data) > 512:
+            log_data = "%s..." % log_data[0:512]
+        Log.info("send[%s] to url[%s], return[%s]" % (req, url, log_data))
+
+        return data.strip()
+    except Exception, e:
+        Log.info("send[%s] to url[%s], error[%s]" % (req, url, str(e)))
+        raise
+
+def url_get(url, data, timeout=30):
     import urllib
     data = urllib.urlencode(data)
     url = "%s?%s" %(url, data)
-    return url_post(url, {})
+    return url_post(url, {}, timeout)

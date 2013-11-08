@@ -100,8 +100,8 @@ def check_dict_data(data, param):
                     "param[%s] must be a list" % key)
 
         for item in param[key]:
-            #判断是否是特定类型
-            if types.TypeType == type(item):
+            #判断是否是特定类型, 元组默认都是类型
+            if types.TypeType == type(item) or types.TupleType == type(item):
                 if not isinstance(value, item):
                     raise InterErr(InterErr.E_INVALID_PARA,
                             "data[%s] is not a %s" % (key, item))
@@ -110,6 +110,9 @@ def check_dict_data(data, param):
                 if not item(value):
                     raise InterErr(InterErr.E_INVALID_PARA,
                             "data[%s] is invalid" % (key))
+            #不能识别，正确
+            else:
+                pass
 
 def list_to_dict(lists, index):
     """

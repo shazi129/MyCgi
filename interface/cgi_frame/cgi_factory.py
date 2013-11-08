@@ -23,8 +23,8 @@ class CgiFactory(object):
 
     def gen_cgi(self):
         try:
-            self._proto.unpack_req(self._field)
-            interfaceName = self._proto._req["interfaceName"]
+            self._proto.unpackReq(self._field)
+            interfaceName = self._proto.req["interfaceName"]
 
             intent = interfaceName.split(".");
             if len(intent) != 2:

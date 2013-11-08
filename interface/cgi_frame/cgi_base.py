@@ -55,7 +55,7 @@ class CgiBase(object):
     def reply(self, reply_header):
         reply_header(self._status, self._header)
         try:
-            reply_data = self._proto.pack_rsp()
+            reply_data = self._proto.packRsp()
             if isinstance(reply_data, basestring):
                 return [reply_data]
             else:
@@ -73,8 +73,5 @@ class CgiBase(object):
         """返回一段json"""
         self._status = '200 OK'
         self._header = [('Content-Type', 'text/plain')]
-        self._proto.set_rsp(code=code, msg=msg, data=data)
+        self._proto.setRsp(code=code, msg=msg, data=data)
 
-    def gen_file_reply(self, filename):
-        """下载文件的实现"""
-        pass

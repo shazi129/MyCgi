@@ -42,7 +42,7 @@ class DBClient(object):
         """转化查询时的值，如字符串得加引号"""
         if isinstance(value, basestring):
             return "'%s'" % MySQLdb.escape_string(value)
-        elif isinstance(value, (int, long)):
+        elif isinstance(value, (int, long, float)):
             return str(value)
         elif value == None:
             return "null"
